@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import SearchBox from "./components/SearchBox";
+import {Container, Flex, Heading, Stack, Text} from "@chakra-ui/react";
+import SearchResults from "./components/SearchResults";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Flex flexDirection="column" minHeight="100vh">
+      <Container as="header" p={4}>
+        <Heading textAlign="center">X Search</Heading>
+      </Container>
+      <Container as="main" display="flex" flexDirection="column" justifyContent="center" flex={1}>
+        <Stack spacing={8}>
+          <SearchBox/>
+          <SearchResults/>
+        </Stack>
+      </Container>
+      <Container as="footer" p={1}>
+        <Text textAlign="center" size="sm">Copyright 2023</Text>
+      </Container>
+    </Flex>
   );
 }
 
