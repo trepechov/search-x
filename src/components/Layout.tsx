@@ -1,7 +1,9 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useContext } from "react";
 import { Container, Flex, Heading, Text } from "@chakra-ui/react";
+import { SearchContext } from "../context/SearchContext";
 
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+  const { data } = useContext(SearchContext);
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <Container as="header" p={4}>
@@ -22,7 +24,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         display="flex"
         justifyContent="space-between"
       >
-        <Text>DB count:data.length</Text>
+        <Text>DB records: {data.length}</Text>
         <Text size="sm">Copyright 2023</Text>
       </Container>
     </Flex>

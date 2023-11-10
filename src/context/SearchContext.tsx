@@ -5,15 +5,18 @@ import {
   createContext,
   useState,
 } from "react";
+import useDB from "../hooks/useDB";
 
 export interface ISearchContext {
-  results: Results;
+  searchResults: Results;
   setResults: Dispatch<SetStateAction<Results>>;
+  data: Country[];
 }
 
 export const SearchContext = createContext<ISearchContext>({
-  results: {} as Results,
+  searchResults: {} as Results,
   setResults: () => {},
+  data: [],
 });
 
 export const SearchContextProvider = ({
@@ -21,8 +24,9 @@ export const SearchContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [results, setResults] = useState<Results>({} as Results);
-  const value = { results, setResults };
+  const [searchResults, setResults] = useState<Results>({} as Results);
+  const { data } = useDB();
+  const value = { searchResults, setResults, data };
 
   return (
     <SearchContext.Provider value={value}>{children}</SearchContext.Provider>

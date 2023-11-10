@@ -9,44 +9,44 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchContext } from "../context/SearchContext";
-
-type SearchBoxProps = {
-  quickSearch: (query: string) => string[];
-  fullSearch: (query: string) => void;
-};
+import useSearchMethods from "../hooks/useSearchMethods";
 
 const boldString = (str: string, substr: string) => {
   var strRegExp = new RegExp(substr, "ig");
   return str.replace(strRegExp, (match) => "<b>" + match + "</b>");
 };
 
-const SearchBox: FC<SearchBoxProps> = ({ quickSearch, fullSearch }) => {
+const SearchBox: FC = () => {
+  const { quickSearch, fullSearch } = useSearchMethods();
+  const { setResults, data } = useContext(SearchContext);
+
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [autocompleteList, setAutocompleteList] = useState<string[]>([]);
-  const { results } = useContext(SearchContext);
 
   const handleSearchQueryChange = (searchQuery: string) => {
     setSearchQuery(searchQuery);
-    const searchResult = quickSearch(searchQuery);
+    const searchResult = quickSearch(searchQuery, data);
     setAutocompleteList(searchResult);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAutocompleteList([]);
-    fullSearch(searchQuery);
+    const results = fullSearch(searchQuery, data);
+    setResults(results);
   };
 
   const handleAutocompleteClick = (complition: string) => {
     setSearchQuery(complition);
     setAutocompleteList([]);
-    fullSearch(complition);
+
+    const results = fullSearch(complition, data);
+    setResults(results);
   };
 
   return (
     <Box>
       <form onSubmit={handleSubmit}>
-        SP: {JSON.stringify(results)}
         <InputGroup position="relative" zIndex={999}>
           <Input
             value={searchQuery}
