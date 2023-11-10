@@ -3,33 +3,96 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Image,
   Heading,
   Stack,
   Text,
+  ButtonGroup,
+  Button,
 } from "@chakra-ui/react";
 
 type SearchResltProps = {
-  results: string[];
+  results: {
+    list: Country[];
+    page: number;
+    total: number;
+  };
+  onPageChange: (page: number) => void;
 };
 
-const SearchResults: FC<SearchResltProps> = ({ results }) => {
+const SearchResults: FC<SearchResltProps> = ({ results, onPageChange }) => {
   return (
     <>
-      {results.length > 0 && (
+      {results.list.length > 0 && (
         <Stack spacing={2}>
-          {results.map((r, k) => (
+          {results.list.map((r, k) => (
             <Card key={k} variant="outline">
               <CardHeader p={3} pb={0}>
-                <Heading size="md">{r}</Heading>
+                <Heading size="md">{r.name.common}</Heading>
               </CardHeader>
-              <CardBody p={3} pt={0}>
-                <Text>{r}</Text>
+              <CardBody
+                p={3}
+                pt={0}
+                display="flex"
+                justifyContent="space-between"
+              >
+                <Text>{r.name.official}</Text>
+                <Image
+                  src={r.flags[0]}
+                  alt={r.name.common}
+                  boxSize={12}
+                  boxShadow="lg"
+                  borderRadius="base"
+                  mt={-5}
+                />
               </CardBody>
             </Card>
           ))}
         </Stack>
       )}
+
+      {results.total > results.list.length && (
+        <Paggination
+          total={results.total}
+          page={results.page}
+          perPage={6}
+          onPageChange={onPageChange}
+        />
+      )}
     </>
+  );
+};
+
+type PagginationProps = {
+  total: number;
+  page: number;
+  perPage: number;
+  onPageChange: (page: number) => void;
+};
+
+const Paggination: FC<PagginationProps> = ({
+  total,
+  page,
+  perPage,
+  onPageChange,
+}) => {
+  const pageCount = Math.ceil(total / perPage);
+
+  return (
+    <ButtonGroup size="sm">
+      <span>{total}</span>
+      {Array(pageCount)
+        .fill("_")
+        .map((i, k) => (
+          <Button
+            key={k}
+            variant={page === k + 1 ? "solid" : "outline"}
+            onClick={() => onPageChange(k + 1)}
+          >
+            {k + 1}
+          </Button>
+        ))}
+    </ButtonGroup>
   );
 };
 

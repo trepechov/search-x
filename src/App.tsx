@@ -6,12 +6,20 @@ import SearchResults from "./components/SearchResults";
 
 const App = () => {
   const [data, setData] = useState<Country[]>([]);
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<{
+    list: Country[];
+    page: number;
+    total: number;
+  }>({
+    list: [],
+    page: 1,
+    total: 0,
+  });
 
   useEffect(() => {
     const getCountries = async () => {
       const response = await fetch(
-        `https://restcountries.com/v3/all?fields=name,flags,cca2`
+        `https://restcountries.com/v3/all?fields=name,flags`
       );
       const data = await response.json();
 
@@ -35,14 +43,38 @@ const App = () => {
     [data]
   );
 
-  //TODO Extend Full Search methods
   const fullSearch = useMemo(
-    () => (query: string) => {
-      const resultsList = quickSearch(query);
-      setResults(resultsList);
+    () => (query: string, page?: number) => {
+      if (query === "") return [];
+      page = page || 1;
+
+      const perPage = 6;
+
+      const allResults = data
+        .filter((c) => {
+          return c.name.common.toLowerCase().includes(query.toLowerCase());
+        })
+        .map((c) => c);
+
+      console.log(
+        "debug slice",
+        (page - 1) * perPage,
+        perPage,
+        allResults.slice((page - 1) * perPage, page * perPage)
+      );
+
+      setResults({
+        list: allResults.slice((page - 1) * perPage, page * perPage),
+        page: page,
+        total: allResults.length,
+      });
     },
-    [data, quickSearch]
+    [data]
   );
+
+  const onPageChange = (page: number) => {
+    fullSearch("ra", page);
+  };
 
   return (
     <Flex flexDirection="column" minHeight="100vh">
@@ -58,7 +90,7 @@ const App = () => {
       >
         <Stack spacing={8}>
           <SearchBox quickSearch={quickSearch} fullSearch={fullSearch} />
-          <SearchResults results={results} />
+          <SearchResults results={results} onPageChange={onPageChange} />
         </Stack>
       </Container>
       <Container
