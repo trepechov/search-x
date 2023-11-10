@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
+import { SearchContext } from "../context/SearchContext";
 import {
   Card,
   CardBody,
@@ -12,18 +13,19 @@ import {
 } from "@chakra-ui/react";
 
 type SearchResltProps = {
-  results: {
-    list: Country[];
-    page: number;
-    total: number;
-  };
-  onPageChange: (page: number) => void;
+  fullSearch: (query: string, page?: number) => void;
 };
 
-const SearchResults: FC<SearchResltProps> = ({ results, onPageChange }) => {
+const SearchResults: FC<SearchResltProps> = ({ fullSearch }) => {
+  const { results } = useContext(SearchContext);
+
+  const onPageChange = (page: number) => {
+    fullSearch(results.query, page);
+  }
+
   return (
     <>
-      {results.list.length > 0 && (
+      {results.list?.length > 0 && (
         <Stack spacing={2}>
           {results.list.map((r, k) => (
             <Card key={k} variant="outline">
@@ -51,7 +53,7 @@ const SearchResults: FC<SearchResltProps> = ({ results, onPageChange }) => {
         </Stack>
       )}
 
-      {results.total > results.list.length && (
+      {results.total > results.list?.length && (
         <Paggination
           total={results.total}
           page={results.page}

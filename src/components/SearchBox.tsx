@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { SearchContext } from "../context/SearchContext";
 
 type SearchBoxProps = {
   quickSearch: (query: string) => string[];
@@ -22,6 +23,7 @@ const boldString = (str: string, substr: string) => {
 const SearchBox: FC<SearchBoxProps> = ({ quickSearch, fullSearch }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [autocompleteList, setAutocompleteList] = useState<string[]>([]);
+  const { results } = useContext(SearchContext);
 
   const handleSearchQueryChange = (searchQuery: string) => {
     setSearchQuery(searchQuery);
@@ -44,6 +46,7 @@ const SearchBox: FC<SearchBoxProps> = ({ quickSearch, fullSearch }) => {
   return (
     <Box>
       <form onSubmit={handleSubmit}>
+        SP: {JSON.stringify(results)}
         <InputGroup position="relative" zIndex={999}>
           <Input
             value={searchQuery}

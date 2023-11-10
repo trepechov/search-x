@@ -1,20 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import "./App.css";
 import SearchBox from "./components/SearchBox";
 import { Container, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import SearchResults from "./components/SearchResults";
+import { SearchContext } from "./context/SearchContext";
 
 const App = () => {
   const [data, setData] = useState<Country[]>([]);
-  const [results, setResults] = useState<{
-    list: Country[];
-    page: number;
-    total: number;
-  }>({
-    list: [],
-    page: 1,
-    total: 0,
-  });
+  // const [results, setResults] = useState<{
+  //   query: strinig;
+  //   list: Country[];
+  //   page: number;
+  //   total: number;
+  // }>({
+  //   list: [],
+  //   page: 1,
+  //   total: 0,
+  // });
+
+  const { results, setResults } = useContext(SearchContext);
 
   useEffect(() => {
     const getCountries = async () => {
@@ -64,6 +68,7 @@ const App = () => {
       );
 
       setResults({
+        query: query,
         list: allResults.slice((page - 1) * perPage, page * perPage),
         page: page,
         total: allResults.length,
@@ -77,32 +82,10 @@ const App = () => {
   };
 
   return (
-    <Flex flexDirection="column" minHeight="100vh">
-      <Container as="header" p={4}>
-        <Heading textAlign="center">X Search</Heading>
-      </Container>
-      <Container
-        as="main"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        flex={1}
-      >
-        <Stack spacing={8}>
-          <SearchBox quickSearch={quickSearch} fullSearch={fullSearch} />
-          <SearchResults results={results} onPageChange={onPageChange} />
-        </Stack>
-      </Container>
-      <Container
-        as="footer"
-        p={1}
-        display="flex"
-        justifyContent="space-between"
-      >
-        <Text>DB count:{data.length}</Text>
-        <Text size="sm">Copyright 2023</Text>
-      </Container>
-    </Flex>
+    <Stack spacing={8}>
+      <SearchBox quickSearch={quickSearch} fullSearch={fullSearch} />
+      <SearchResults fullSearch={fullSearch} />
+    </Stack>
   );
 };
 

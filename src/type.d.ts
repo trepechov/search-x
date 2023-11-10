@@ -5,3 +5,10 @@ type Country = {
   };
   flags: string[2];
 };
+
+type Results = {
+  query: string;
+  list: Country[];
+  total: number;
+  page: number;
+};
