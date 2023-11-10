@@ -51,6 +51,12 @@ const ResultsList: FC = () => {
         </Stack>
       )}
 
+      {searchResults.list?.length === 0 && searchResults.query !== "" && (
+        <Text align="center" fontStyle="italic">
+          No results
+        </Text>
+      )}
+
       {searchResults.total > searchResults.list?.length && (
         <Paggination
           total={searchResults.total}

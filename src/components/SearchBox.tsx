@@ -1,4 +1,4 @@
-import { FC, FormEvent, useContext, useState } from "react";
+import { FC, FormEvent, useContext, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   InputGroup,
   Stack,
   Text,
+  useOutsideClick,
 } from "@chakra-ui/react";
 import { SearchContext } from "../context/SearchContext";
 import useSearchMethods from "../hooks/useSearchMethods";
@@ -22,6 +23,13 @@ const SearchBox: FC = () => {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [autocompleteList, setAutocompleteList] = useState<string[]>([]);
+
+  const autoCompleteRef = useRef(null);
+
+  useOutsideClick({
+    ref: autoCompleteRef,
+    handler: () => setAutocompleteList([]),
+  });
 
   const handleSearchQueryChange = (searchQuery: string) => {
     setSearchQuery(searchQuery);
@@ -58,6 +66,7 @@ const SearchBox: FC = () => {
           <Button type="submit">Search</Button>
           {autocompleteList.length && (
             <Card
+              ref={autoCompleteRef}
               variant="elevated"
               w="full"
               position="absolute"
@@ -68,11 +77,11 @@ const SearchBox: FC = () => {
               <Stack spacing={0}>
                 {autocompleteList.map((complition, k) => (
                   <Text
-                    p={2}
                     key={k}
+                    p={2}
                     borderRadius={4}
                     cursor="pointer"
-                    _hover={{ bg: "black.100" }}
+                    _hover={{ bg: "gray.100" }}
                     onClick={() => handleAutocompleteClick(complition)}
                     dangerouslySetInnerHTML={{
                       __html: boldString(complition, searchQuery),

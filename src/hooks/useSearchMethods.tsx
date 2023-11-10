@@ -18,7 +18,7 @@ const useSearchMethods = () => {
 
   const fullSearch = useMemo(
     () => (query: string, data: Country[], page?: number) => {
-      // if (query === "") return [];
+      if (query === "") return { query: "", list: [], page: 1, total: 0 };
       page = page || 1;
 
       const resultsList = data
