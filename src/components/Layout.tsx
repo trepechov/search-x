@@ -7,7 +7,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <Container as="header" p={4}>
-        <Heading textAlign="center">X Search</Heading>
+        <Heading textAlign="center">Search X</Heading>
       </Container>
       <Container
         as="main"
